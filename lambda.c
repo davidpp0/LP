@@ -152,7 +152,7 @@ void goApp(App *root, char *charsAlterar, int index, char *charSubstituicao){
 		// CASO ACHE O CHAR DA APP NA LISTA DE SUBSTITUIÇÂO, SUBSTITUI
 		printf("%d\n", x);
 		if(x!=-1){
-			strcpy(root->letter, &charSubstituicao[x]);
+			strcpy(root->letter, & charSubstituicao[x]);
 		}
 		
 	}else if(root->type == letter_terms){
