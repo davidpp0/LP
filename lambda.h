@@ -10,7 +10,7 @@ void printSTerm(STerm *root);
 void printApp(App *root);
 void printAbs(Abs *root);
 
-void goTerms( Terms *root);
-void goSTerm(STerm *root);
-void goApp(App *root);
-void goAbs(Abs *root);
+void goTerms( Terms *root, char *charsAlterar, int index, char *charSubstituicao);
+void goSTerm(STerm *root, char *charsAlterar, int index, char *charSubstituicao);
+void goApp(App *root, char *charsAlterar, int index, char *charSubstituicao);
+void goAbs(Abs *root, char *charsAlterar, int index, char *charSubstituicao);
