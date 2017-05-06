@@ -65,7 +65,7 @@
 #line 1 "anasin.y" /* yacc.c:339  */
 
 #include <stdio.h>
-
+#include "lambda.c"
 
 int yylex(void);              //main do lexer
 void yyerror(const char *);   //funcao que retorna erros 
@@ -109,7 +109,8 @@ extern int yydebug;
     PONTO = 259,
     PARE = 260,
     PARD = 261,
-    LETTER = 262
+    LETTER = 262,
+    PARD0 = 263
   };
 #endif
 
@@ -118,11 +119,15 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 13 "anasin.y" /* yacc.c:355  */
+#line 14 "anasin.y" /* yacc.c:355  */
 
 	char *letter;
+	struct Terms *terms;
+	struct STerm *sterm;
+	struct App *app;
+	struct Abs *abs;
 
-#line 126 "anasin.tab.c" /* yacc.c:355  */
+#line 131 "anasin.tab.c" /* yacc.c:355  */
 };
 
 typedef union YYSTYPE YYSTYPE;
@@ -139,7 +144,7 @@ int yyparse (void);
 
 /* Copy the second part of user declarations.  */
 
-#line 143 "anasin.tab.c" /* yacc.c:358  */
+#line 148 "anasin.tab.c" /* yacc.c:358  */
 
 #ifdef short
 # undef short
@@ -381,10 +386,10 @@ union yyalloc
 /* YYFINAL -- State number of the termination state.  */
 #define YYFINAL  12
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   11
+#define YYLAST   12
 
 /* YYNTOKENS -- Number of terminals.  */
-#define YYNTOKENS  8
+#define YYNTOKENS  9
 /* YYNNTS -- Number of nonterminals.  */
 #define YYNNTS  6
 /* YYNRULES -- Number of rules.  */
@@ -395,7 +400,7 @@ union yyalloc
 /* YYTRANSLATE[YYX] -- Symbol number corresponding to YYX as returned
    by yylex, with out-of-bounds checking.  */
 #define YYUNDEFTOK  2
-#define YYMAXUTOK   262
+#define YYMAXUTOK   263
 
 #define YYTRANSLATE(YYX)                                                \
   ((unsigned int) (YYX) <= YYMAXUTOK ? yytranslate[YYX] : YYUNDEFTOK)
@@ -430,15 +435,15 @@ static const yytype_uint8 yytranslate[] =
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     1,     2,     3,     4,
-       5,     6,     7
+       5,     6,     7,     8
 };
 
 #if YYDEBUG
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    28,    28,    32,    33,    37,    38,    39,    43,    45,
-      46
+       0,    40,    40,    45,    46,    50,    51,    52,    56,    58,
+      59
 };
 #endif
 
@@ -448,7 +453,7 @@ static const yytype_uint8 yyrline[] =
 static const char *const yytname[] =
 {
   "$end", "error", "$undefined", "LAMBDA", "PONTO", "PARE", "PARD",
-  "LETTER", "$accept", "program", "terms", "term", "abs", "app", YY_NULLPTR
+  "LETTER", "PARD0", "$accept", "program", "terms", "term", "abs", "app", YY_NULLPTR
 };
 #endif
 
@@ -457,14 +462,14 @@ static const char *const yytname[] =
    (internal) symbol number NUM (which must be that of a token).  */
 static const yytype_uint16 yytoknum[] =
 {
-       0,   256,   257,   258,   259,   260,   261,   262
+       0,   256,   257,   258,   259,   260,   261,   262,   263
 };
 # endif
 
-#define YYPACT_NINF -7
+#define YYPACT_NINF -6
 
 #define yypact_value_is_default(Yystate) \
-  (!!((Yystate) == (-7)))
+  (!!((Yystate) == (-6)))
 
 #define YYTABLE_NINF -1
 
@@ -475,8 +480,8 @@ static const yytype_uint16 yytoknum[] =
      STATE-NUM.  */
 static const yytype_int8 yypact[] =
 {
-      -2,    -5,    -2,    -3,     6,    -7,    -2,    -7,    -7,     3,
-       4,    -7,    -7,    -7,    -2,    -7,    -7
+       0,    -5,     0,     3,     9,    -6,     0,    -6,    -6,     6,
+       5,    -6,    -6,    -6,     0,    -6,    -6
 };
 
   /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
@@ -491,7 +496,7 @@ static const yytype_uint8 yydefact[] =
   /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-      -7,    -7,    -6,     7,    -7,     8
+      -6,    -6,    -2,    -6,    -6,    -6
 };
 
   /* YYDEFGOTO[NTERM-NUM].  */
@@ -505,29 +510,29 @@ static const yytype_int8 yydefgoto[] =
      number is the opposite.  If YYTABLE_NINF, syntax error.  */
 static const yytype_uint8 yytable[] =
 {
-      13,     1,     9,     2,     3,     3,    12,    14,    16,    10,
-      15,    11
+      10,    11,     9,     1,    13,     2,     1,     3,     2,    12,
+      14,    15,    16
 };
 
 static const yytype_uint8 yycheck[] =
 {
-       6,     3,     7,     5,     7,     7,     0,     4,    14,     2,
-       6,     3
+       2,     3,     7,     3,     6,     5,     3,     7,     5,     0,
+       4,     6,    14
 };
 
   /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
      symbol of state STATE-NUM.  */
 static const yytype_uint8 yystos[] =
 {
-       0,     3,     5,     7,     9,    10,    11,    12,    13,     7,
-      11,    13,     0,    10,     4,     6,    10
+       0,     3,     5,     7,    10,    11,    12,    13,    14,     7,
+      11,    11,     0,    11,     4,     6,    11
 };
 
   /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
 static const yytype_uint8 yyr1[] =
 {
-       0,     8,     9,    10,    10,    11,    11,    11,    12,    13,
-      13
+       0,     9,    10,    11,    11,    12,    12,    12,    13,    14,
+      14
 };
 
   /* YYR2[YYN] -- Number of symbols on the right hand side of rule YYN.  */
@@ -1210,8 +1215,62 @@ yyreduce:
   YY_REDUCE_PRINT (yyn);
   switch (yyn)
     {
-      
-#line 1215 "anasin.tab.c" /* yacc.c:1646  */
+        case 2:
+#line 40 "anasin.y" /* yacc.c:1646  */
+    {root((yyvsp[0].terms));}
+#line 1222 "anasin.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 3:
+#line 45 "anasin.y" /* yacc.c:1646  */
+    {(yyval.terms) = newTerm(term_terms, (yyvsp[0].terms), (yyvsp[-1].sterm));}
+#line 1228 "anasin.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 4:
+#line 46 "anasin.y" /* yacc.c:1646  */
+    {(yyval.terms) = newTerm(term_, NULL, (yyvsp[0].sterm));}
+#line 1234 "anasin.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 5:
+#line 50 "anasin.y" /* yacc.c:1646  */
+    {(yyval.sterm) = newSTerm(abs_, (yyvsp[0].abs), NULL, NULL);}
+#line 1240 "anasin.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 6:
+#line 51 "anasin.y" /* yacc.c:1646  */
+    {(yyval.sterm) = newSTerm(app_, NULL, (yyvsp[0].app), NULL);}
+#line 1246 "anasin.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 7:
+#line 52 "anasin.y" /* yacc.c:1646  */
+    {(yyval.sterm) = newSTerm(par_terms, NULL, NULL, (yyvsp[-1].terms));}
+#line 1252 "anasin.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 8:
+#line 56 "anasin.y" /* yacc.c:1646  */
+    {(yyval.abs) = newAbs((yyvsp[-2].letter),(yyvsp[0].terms));}
+#line 1258 "anasin.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 9:
+#line 58 "anasin.y" /* yacc.c:1646  */
+    {(yyval.app) = newApp(letter_, NULL, (yyvsp[0].letter));}
+#line 1264 "anasin.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 10:
+#line 59 "anasin.y" /* yacc.c:1646  */
+    {(yyval.app) = newApp(letter_terms, (yyvsp[0].terms), (yyvsp[-1].letter));}
+#line 1270 "anasin.tab.c" /* yacc.c:1646  */
+    break;
+
+
+#line 1274 "anasin.tab.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1439,7 +1498,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 50 "anasin.y" /* yacc.c:1906  */
+#line 63 "anasin.y" /* yacc.c:1906  */
 
 
 void yyerror(const char *msg) {

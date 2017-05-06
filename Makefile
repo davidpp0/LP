@@ -15,6 +15,7 @@ lex.yy.c : analex.lex
 run : lambda
 	@echo '[teste.in]'
 	@./lambda < teste.in
+	
 
 clean :
 	@$(RM) lambda

@@ -10,12 +10,12 @@ Terms *newTerm(terms_type type, Terms *terms, STerm *sterm){
 }
 
 
-STerm *newSTerm(sTerm_type type, Abs *abs, App *app, STerm *sterm){
+STerm *newSTerm(sTerm_type type, Abs *abs, App *app, Terms *terms){
 	STerm *t = malloc(sizeof(struct STerm));
 	t->type = type;
 	t->abs = abs;
 	t->app = app;
-	t->sterm = sterm;
+	t->terms = terms;
 	return t;
 }
 

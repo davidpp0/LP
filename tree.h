@@ -10,7 +10,7 @@ typedef enum termsType {
 typedef enum sTermType{
 	abs_,
 	app_,
-	par_term
+	par_terms
 }sTerm_type;
 
 typedef enum appType
@@ -36,7 +36,7 @@ struct STerm
 	sTerm_type type;
 	Abs *abs;
 	App *app;
-	STerm *sterm;
+	Terms *terms;
 };
 
 struct App
@@ -54,6 +54,6 @@ struct Abs
 };
 
 Terms *newTerm(terms_type type, Terms *terms, STerm *sterm);
-STerm *newSTerm(sTerm_type type, Abs *abs, App *app, STerm *sterm);
+STerm *newSTerm(sTerm_type type, Abs *abs, App *app, Terms *terms);
 App *newApp(appType type, Terms *terms, char *letter);
 Abs *newAbs(char *letter, Terms *terms);

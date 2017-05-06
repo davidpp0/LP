@@ -771,9 +771,9 @@ case 5:
 YY_RULE_SETUP
 #line 20 "analex.lex"
 {
-	yylval.letter = strdup(yytext);
+	yylval.letter = strdup(yytext); /*coloca o valor na stack*/
 
-	return LETTER;
+	return LETTER;	
 }
 	YY_BREAK
 case 6:

@@ -49,7 +49,8 @@ extern int yydebug;
     PONTO = 259,
     PARE = 260,
     PARD = 261,
-    LETTER = 262
+    LETTER = 262,
+    PARD0 = 263
   };
 #endif
 
@@ -58,11 +59,15 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 13 "anasin.y" /* yacc.c:1909  */
+#line 14 "anasin.y" /* yacc.c:1909  */
 
 	char *letter;
+	struct Terms *terms;
+	struct STerm *sterm;
+	struct App *app;
+	struct Abs *abs;
 
-#line 66 "anasin.tab.h" /* yacc.c:1909  */
+#line 71 "anasin.tab.h" /* yacc.c:1909  */
 };
 
 typedef union YYSTYPE YYSTYPE;
