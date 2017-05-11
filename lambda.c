@@ -58,11 +58,11 @@ void root(Terms *root){
 	char charsAlterar[10] ="";
 	char charSubstituicao[10] ="";
 	int index =0;
-	printf("<- ");	
+	printf("<-");	
 	printTerms(root);
 	printf("\n");
 	goTerms(root, charsAlterar, index, charSubstituicao);
-	printArray(charsAlterar);
+	printf("->");
 	printTerms(root);
 	printf("\n");
 }
@@ -122,7 +122,7 @@ void printAbs(Abs *root){
 // FUNCOES DE PERCORRER E ALTERAR ARVORE-----------------------
 
 void goTerms( Terms *root, char *charsAlterar, int index, char *charSubstituicao){
-	printf("TERMS %d\n", root->type );
+	
 	if (root->type == term_terms){
 		goSTerm(root->sterm, charsAlterar, index, charSubstituicao);
 
@@ -134,7 +134,7 @@ void goTerms( Terms *root, char *charsAlterar, int index, char *charSubstituicao
 }
 
 void goSTerm(STerm *root,char *charsAlterar, int index, char *charSubstituicao){
-	printf("STERM %d\n", root->type );
+	
 	if (root->type == abs_){
 		goAbs(root->abs, charsAlterar, index, charSubstituicao);	
 	}else if(root->type == app_){
@@ -146,27 +146,21 @@ void goSTerm(STerm *root,char *charsAlterar, int index, char *charSubstituicao){
 
 
 void goApp(App *root, char *charsAlterar, int index, char *charSubstituicao){
-	printf("APP %d\n", root->type);
-	if (root->type == letter_){
 		int x =0;
-		printf("LETRA A ALTERAR: %s\n", root->letter);
-		x = findCharList(*root->letter, charsAlterar, 9);
+		x = findCharList(*root->letter, charsAlterar, 10);
 		// CASO ACHE O CHAR DA APP NA LISTA DE SUBSTITUIÇÂO, SUBSTITUI
 		if(x!=-1){
 			char c = charSubstituicao[x];
-			printf("ALTERA-SE O CHAR PELO: %c\n", charSubstituicao[x]);
-			printArray(charSubstituicao);
 			strcpy(root->letter, &c);
+		
+			}if(root->type == letter_terms){
+			goTerms(root->terms, charsAlterar, index, charSubstituicao);
 		}
-		
-	}else if(root->type == letter_terms){
-		
-		goTerms(root->terms, charsAlterar, index, charSubstituicao);
-	}
 }
 
+
 void goAbs(Abs *root, char *charsAlterar, int index, char *charSubstituicao){
-	printf("ABS \n");
+	
 	if (search(root->letter) ==1){	
 		strcpy(&charsUsados[indice++],root->letter);
 	}
@@ -174,8 +168,6 @@ void goAbs(Abs *root, char *charsAlterar, int index, char *charSubstituicao){
 	char c = geraLetra();
 	strcpy(&charsAlterar[index],root->letter);
 	strcpy(&charSubstituicao[index++], &c);
-	printf("ADICIONA CHAR P ALTERAR: %s\n", root->letter);
-	printf("CHAR USADO: %s\n", &c);
 	strcpy(root->letter, &c);
 	//COPIAR PARA ARVORE A NOVA LETRA
 //	strcpy(root->letter, &geraLetra());
