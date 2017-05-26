@@ -6,6 +6,8 @@
 const char *alfabeto = "abcdefghijlmnopqrstuvwxyz";
 char charsUsados[26] = "";
 int indice = 0;
+char singleChar[1]= "";
+STerm *newSterm = NULL;
 
 void printArray(char *array){
 	for(int i=0; i<10; i++){
@@ -61,10 +63,11 @@ void root(Terms *root){
 	printf("<-");	
 	printTerms(root);
 	printf("\n");
-	goTerms(root, charsAlterar, index, charSubstituicao);
-	printf("->");
-	printTerms(root);
-	printf("\n");
+	goToTerms(root);
+//	goTerms(root, charsAlterar, index, charSubstituicao);
+//	printf("->");
+//	printTerms(root);
+//	printf("\n");
 }
 
 //FUNCOES DE IMPRIMIR ARVORE----------------------------
@@ -148,7 +151,7 @@ void goSTerm(STerm *root,char *charsAlterar, int index, char *charSubstituicao){
 void goApp(App *root, char *charsAlterar, int index, char *charSubstituicao){
 		int x =0;
 		x = findCharList(*root->letter, charsAlterar, 10);
-		// CASO ACHE O CHAR DA APP NA LISTA DE SUBSTITUIÇÂO, SUBSTITUI
+		// CASO ACHE O CHAR DA APP NA LISTA DE SUBSTITUICAO, SUBSTITUI
 		if(x!=-1){
 			char c = charSubstituicao[x];
 			strcpy(root->letter, &c);
@@ -179,6 +182,94 @@ void goAbs(Abs *root, char *charsAlterar, int index, char *charSubstituicao){
 		strcpy(&charsAlterar[index], &c);
 		strcpy(&charSubstituicao[index--], &c);
 	}	
+
+}
+
+
+
+
+///                 MODULO2                                        ////////////////////
+
+void goToTerms( Terms *root){
+	if (root->type == term_terms){
+		printf("term_terms\n");
+
+		//VERIFICA SE O ARRAY TEM ALGUM CHAR P SUBSTITUIR
+		//VERIFICA SE O PRIMEIRO TERMO TEM PARENTISES
+		//VERIFICA SE ESSE TERMO TEM UMA ABS DENTRO
+		//OBJ: GUARDAR A LETRA DA PRIM ABS A SUBSTITUIR
+		if(strcmp("",singleChar) == 0 && root->sterm-> type == par_terms && root->sterm->terms->sterm-> type == abs_){
+				printf("aqui\n" );
+				strcpy(&singleChar[0],root->sterm->terms->sterm->abs->letter);
+				goToTerms(root->terms);
+		
+		}
+
+///EXISTE AQUI UM PROBLEMA, ENTRA DUAS VEZES NESTE LUGAR EM VEZ DE 1
+		//VERIFICA SE EXISTE CHAR A SUBSTITUIR E VAI PROCURAR A SUBSTITUICAO
+		if(strcmp("",singleChar) != 0){
+			if (root->terms->type == term_){
+				printf("here\n");
+				newSterm = root->terms->sterm;
+				return;
+			}else if(root->terms->type ==term_terms){
+				printf("here2\n");
+				newSterm = root->sterm;
+				return;
+			}
+		}
+	
+		goToSTerm(root->sterm);
+		goToTerms(root->terms);
+
+
+	}else if(root->type == term_){
+		printf("term_\n");
+		goToSTerm(root->sterm);
+	}
+}
+
+void goToSTerm(STerm *root){
+	if (root->type == abs_){
+		printf("abs_\n");
+		goToAbs(root->abs);	
+	}else if(root->type == app_){
+		printf("app_\n");
+		goToApp(root->app);
+	}else if(root->type == par_terms){
+		printf("par_terms\n");
+		printf("(\n");
+		goToTerms(root->terms);
+		printf(")\n");
+	}
+}
+
+
+void goToApp(App *root){
+	if (root->type == letter_){
+		printf("letter_\n");
+		if (search(root->letter) ==1){	
+			strcpy(&charsUsados[indice++],root->letter);
+		}
+		printf("%s\n", root->letter);
+	}else if(root->type == letter_terms){
+		printf("letter_terms\n");
+		if (search(root->letter) ==1){	
+			strcpy(&charsUsados[indice++],root->letter);
+		}
+		printf("%s\n", root->letter);		
+		goToTerms(root->terms);
+	}
+}
+
+void goToAbs(Abs *root){
+	if (search(root->letter) ==1){	
+		strcpy(&charsUsados[indice++],root->letter);
+	}
+	printf("!%s.\n", root->letter);
+	if (root->terms != NULL){
+		goToTerms(root->terms);
+	}
 
 }
 

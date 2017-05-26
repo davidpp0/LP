@@ -14,3 +14,8 @@ void goTerms( Terms *root, char *charsAlterar, int index, char *charSubstituicao
 void goSTerm(STerm *root, char *charsAlterar, int index, char *charSubstituicao);
 void goApp(App *root, char *charsAlterar, int index, char *charSubstituicao);
 void goAbs(Abs *root, char *charsAlterar, int index, char *charSubstituicao);
+
+void goToTerms( Terms *root);
+void goToSTerm(STerm *root);
+void goToApp(App *root);
+void goToAbs(Abs *root);
