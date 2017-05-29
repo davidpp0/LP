@@ -64,6 +64,7 @@ void root(Terms *root){
 	printTerms(root);
 	printf("\n");	
 	goToTerms(root);
+	printf("->");
 	printTerms(root);
 	printf("\n");
 //	goTerms(root, charsAlterar, index, charSubstituicao);
@@ -210,8 +211,7 @@ void goToTerms( Terms *root){
 		
 		if(strcmp("",singleChar)!=0 && newSterm != NULL && root->sterm->type == app_){
 			root->sterm = newSterm;
-			printf("%d", root->type);
-		//	printf("%d\n",root->sterm->app );
+
 		///RESET DAS VARS DE SUBSTITUICAO
 			
 		}
@@ -225,12 +225,10 @@ void goToTerms( Terms *root){
 		
 		}
 
-///EXISTE AQUI UM PROBLEMA, ENTRA DUAS VEZES NESTE LUGAR EM VEZ DE 1
-		//VERIFICA SE EXISTE CHAR A SUBSTITUIR E VAI PROCURAR A SUBSTITUICAO
 		if(strcmp("",singleChar) != 0 && newSterm == NULL){
 				Terms *newTerm = malloc(sizeof(Terms));
 			if (root->terms->type == term_){
-				printf("here\n");
+			
 			
 				newSterm = root->terms->sterm;
 				newSterm-> type = root->terms->sterm->type;
@@ -240,22 +238,17 @@ void goToTerms( Terms *root){
 				}
 
 			}else if(root->terms->type ==term_terms){
-				printf("here2\n");
+		
 
 				newSterm = root->terms->sterm;
 				newSterm-> type = root->terms->sterm->type;
-				/*
-				if (root->terms->type==0){
-					root->terms->type=1;
-				}
-				*/
-	
+
 			}
 		}
 		if (root->sterm!=NULL){
 			goToSTerm(root->sterm);
 		}
-		if(root->terms){
+		if(root->terms!=NULL){
 			goToTerms(root->terms);
 		}
 
@@ -263,14 +256,6 @@ void goToTerms( Terms *root){
 
 	else if(root->type == term_){
 		printf("term_\n");
-		if(strcmp("",singleChar)!=0 && newSterm != NULL && root->sterm->type == app_ && root->sterm->app->letter[0] == singleChar[0]){
-			printf("\n FAZ SUBSTITUICAO\n");
-			printf("d\n");
-		//	printf("%c\n", singleChar[0]);
-		//	printf("%d\n", newSterm->type);
-		//	root->sterm = newSterm;	
-		}
-
 	 	if (root->sterm!=NULL){
 			goToSTerm(root->sterm);
 		}
@@ -293,7 +278,7 @@ void goToSTerm(STerm *root){
 	}else if(root->type == par_terms){
 		printf("par_terms\n");
 		printf("(\n");
-		if(root->terms){	
+		if(root->terms!=NULL){	
 			goToTerms(root->terms);
 		}
 		printf(")\n");
@@ -305,14 +290,12 @@ void goToSTerm(STerm *root){
 void goToApp(App *root){
 	if (root->type == letter_){
 		printf("letter_\n");
-		printf("%s\n", root->letter);
 	}else if(root->type == letter_terms){
 		printf("letter_terms\n");
 		if (search(root->letter) ==1){	
 			strcpy(&charsUsados[indice++],root->letter);
-		}
-		printf("%s\n", root->letter);		
-		if (root->terms){	
+		}	
+		if (root->terms!=NULL){	
 			goToTerms(root->terms);
 		}
 	}
@@ -322,7 +305,7 @@ void goToAbs(Abs *root){
 	if (search(root->letter) ==1){	
 		strcpy(&charsUsados[indice++],root->letter);
 	}
-	printf("!%s.\n", root->letter);
+	
 	if (root->terms != NULL){
 		goToTerms(root->terms);
 	}
@@ -330,5 +313,3 @@ void goToAbs(Abs *root){
 }
 
 
-//FALTA ALTERAR PARA COMECAR A COLOCAR CHARS NO ARRAY DE USADOS 
-//RETIRAR OS CHARS NO FIM DA FUNCAO 
