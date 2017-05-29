@@ -62,7 +62,7 @@ void root(Terms *root){
 	int index =0;
 	printf("<-");	
 	printTerms(root);
-	printf("\n");
+	printf("\n");	
 	goToTerms(root);
 	printTerms(root);
 	printf("\n");
@@ -102,12 +102,12 @@ void printApp(App *root){
 		if (search(root->letter) ==1){	
 			strcpy(&charsUsados[indice++],root->letter);
 		}
-		printf("%s", root->letter);
+		printf("%c", root->letter[0]);
 	}else if(root->type == letter_terms){
 		if (search(root->letter) ==1){	
 			strcpy(&charsUsados[indice++],root->letter);
 		}
-		printf("%s", root->letter);		
+		printf("%c", root->letter[0]);		
 		printTerms(root->terms);
 	}
 }
@@ -195,6 +195,19 @@ void goAbs(Abs *root, char *charsAlterar, int index, char *charSubstituicao){
 void goToTerms( Terms *root){
 	if (root->type == term_terms){
 		printf("term_terms\n");
+		
+		if(strcmp("",singleChar)!=0 && newSterm != NULL && root->sterm->type == app_){
+			printf("\nFAZ SUBSTITUICAO\n");
+			free(root->sterm->app);
+			Terms *newTerm = malloc(sizeof(Terms));
+			newSterm-> type = term_;
+			newTerm->sterm = newSterm;
+			printTerms(newTerm);
+			root->sterm = newSterm;	
+		///RESET DAS VARS DE SUBSTITUICAO
+			newSterm = NULL;
+			strcpy(singleChar,"");
+		}
 
 		//VERIFICA SE O ARRAY TEM ALGUM CHAR P SUBSTITUIR
 		//VERIFICA SE O PRIMEIRO TERMO TEM PARENTISES
@@ -203,31 +216,54 @@ void goToTerms( Terms *root){
 		if(strcmp("",singleChar) == 0 && root->sterm-> type == par_terms && root->sterm->terms->sterm-> type == abs_){
 				printf("aqui\n" );
 				strcpy(&singleChar[0],root->sterm->terms->sterm->abs->letter);
-				goToTerms(root->terms);
 		
 		}
 
 ///EXISTE AQUI UM PROBLEMA, ENTRA DUAS VEZES NESTE LUGAR EM VEZ DE 1
 		//VERIFICA SE EXISTE CHAR A SUBSTITUIR E VAI PROCURAR A SUBSTITUICAO
 		if(strcmp("",singleChar) != 0 && newSterm == NULL){
+				Terms *newTerm = malloc(sizeof(Terms));
 			if (root->terms->type == term_){
 				printf("here\n");
+			/*
+				printf("%s\n", root->terms->sterm->app->letter); 	 	
+				newTerm->sterm = root->terms->sterm;
+				newTerm->type = term_;
+				printTerms(newTerm);
+			*/
 				newSterm = root->terms->sterm;
-			}else if(root->terms->type ==term_terms && newSterm ==NULL){
+				newSterm-> type = root->terms->sterm->type;
+
+
+			}else if(root->terms->type ==term_terms){
 				printf("here2\n");
-				newSterm = root->sterm;
+				/*
+				printf("%s\n", root->terms->sterm->app->letter); 	 	
+				newTerm->sterm = root->terms->sterm;
+				newTerm->type = term_;
+				printTerms(newTerm);*/
+
+				newSterm = root->terms->sterm;
+				newSterm-> type = root->terms->sterm->type;
+				
 	
 			}
 		}
 		goToSTerm(root->sterm);
 		goToTerms(root->terms);
 
-	}
-		
+	}	
 
 	else if(root->type == term_){
 		printf("term_\n");
-		goToSTerm(root->sterm);
+		if(strcmp("",singleChar)!=0 && newSterm != NULL && root->sterm->type == app_ && root->sterm->app->letter[0] == singleChar[0]){
+			printf("\n FAZ SUBSTITUICAO\n");
+			printf("d\n");
+		//	printf("%c\n", singleChar[0]);
+		//	printf("%d\n", newSterm->type);
+		//	root->sterm = newSterm;	
+		}
+	 	goToSTerm(root->sterm);
 	}
 
 
@@ -246,23 +282,13 @@ void goToSTerm(STerm *root){
 		goToTerms(root->terms);
 		printf(")\n");
 	}
+
 }
 
 
 void goToApp(App *root){
 	if (root->type == letter_){
 		printf("letter_\n");
-		if (root->letter[0] == singleChar[0] && newSterm != NULL){	
-			printf("RATATUI%s\n", root->letter);
-			free(root);
-			printf("\n\n\n\n");
-			STerm *root = newSterm;
-			Terms *newTerm = malloc(sizeof(Terms));
-			newTerm->type=term_;
-			newTerm->sterm;
-			printTerms(newTerm);
-			printf("\n\n");			 
-		}
 		printf("%s\n", root->letter);
 	}else if(root->type == letter_terms){
 		printf("letter_terms\n");
