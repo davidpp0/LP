@@ -75,24 +75,34 @@ void root(Terms *root){
 //FUNCOES DE IMPRIMIR ARVORE----------------------------
 void printTerms( Terms *root){
 	if (root->type == term_terms){
-		printSTerm(root->sterm);
-
-		printTerms(root->terms);
-
+		if (root->sterm != NULL){
+			printSTerm(root->sterm);
+		}
+		if (root->terms != NULL){
+			printTerms(root->terms);
+		}
 	}else if(root->type == term_){
-		printSTerm(root->sterm);
+		if (root->sterm != NULL){
+			printSTerm(root->sterm);
+		}
 	}
 }
 
 void printSTerm(STerm *root){
 	if (root->type == abs_){
-		printAbs(root->abs);	
+		if(root->abs != NULL){
+			printAbs(root->abs);	
+		}
 	}else if(root->type == app_){
-		printApp(root->app);
+		if(root->app!= NULL){
+			printApp(root->app);
+		}
 	}else if(root->type == par_terms){
-		printf("(");
-		printTerms(root->terms);
-		printf(")");
+		if (root->terms!=NULL){
+			printf("(");
+			printTerms(root->terms);
+			printf(")");
+		}
 	}
 }
 
@@ -108,7 +118,9 @@ void printApp(App *root){
 			strcpy(&charsUsados[indice++],root->letter);
 		}
 		printf("%c", root->letter[0]);		
-		printTerms(root->terms);
+		if(root->terms!=NULL){
+			printTerms(root->terms);
+		}
 	}
 }
 
@@ -197,16 +209,11 @@ void goToTerms( Terms *root){
 		printf("term_terms\n");
 		
 		if(strcmp("",singleChar)!=0 && newSterm != NULL && root->sterm->type == app_){
-			printf("\nFAZ SUBSTITUICAO\n");
-			free(root->sterm->app);
-			Terms *newTerm = malloc(sizeof(Terms));
-			newSterm-> type = term_;
-			newTerm->sterm = newSterm;
-			printTerms(newTerm);
-			root->sterm = newSterm;	
+			root->sterm = newSterm;
+			printf("%d", root->type);
+		//	printf("%d\n",root->sterm->app );
 		///RESET DAS VARS DE SUBSTITUICAO
-			newSterm = NULL;
-			strcpy(singleChar,"");
+			
 		}
 
 		//VERIFICA SE O ARRAY TEM ALGUM CHAR P SUBSTITUIR
@@ -214,7 +221,6 @@ void goToTerms( Terms *root){
 		//VERIFICA SE ESSE TERMO TEM UMA ABS DENTRO
 		//OBJ: GUARDAR A LETRA DA PRIM ABS A SUBSTITUIR
 		if(strcmp("",singleChar) == 0 && root->sterm-> type == par_terms && root->sterm->terms->sterm-> type == abs_){
-				printf("aqui\n" );
 				strcpy(&singleChar[0],root->sterm->terms->sterm->abs->letter);
 		
 		}
@@ -225,32 +231,33 @@ void goToTerms( Terms *root){
 				Terms *newTerm = malloc(sizeof(Terms));
 			if (root->terms->type == term_){
 				printf("here\n");
-			/*
-				printf("%s\n", root->terms->sterm->app->letter); 	 	
-				newTerm->sterm = root->terms->sterm;
-				newTerm->type = term_;
-				printTerms(newTerm);
-			*/
+			
 				newSterm = root->terms->sterm;
 				newSterm-> type = root->terms->sterm->type;
-
+				if (root->type == 0){
+					root->type =1;
+					root->terms = NULL;
+				}
 
 			}else if(root->terms->type ==term_terms){
 				printf("here2\n");
-				/*
-				printf("%s\n", root->terms->sterm->app->letter); 	 	
-				newTerm->sterm = root->terms->sterm;
-				newTerm->type = term_;
-				printTerms(newTerm);*/
 
 				newSterm = root->terms->sterm;
 				newSterm-> type = root->terms->sterm->type;
-				
+				/*
+				if (root->terms->type==0){
+					root->terms->type=1;
+				}
+				*/
 	
 			}
 		}
-		goToSTerm(root->sterm);
-		goToTerms(root->terms);
+		if (root->sterm!=NULL){
+			goToSTerm(root->sterm);
+		}
+		if(root->terms){
+			goToTerms(root->terms);
+		}
 
 	}	
 
@@ -263,7 +270,10 @@ void goToTerms( Terms *root){
 		//	printf("%d\n", newSterm->type);
 		//	root->sterm = newSterm;	
 		}
-	 	goToSTerm(root->sterm);
+
+	 	if (root->sterm!=NULL){
+			goToSTerm(root->sterm);
+		}
 	}
 
 
@@ -272,14 +282,20 @@ void goToTerms( Terms *root){
 void goToSTerm(STerm *root){
 	if (root->type == abs_){
 		printf("abs_\n");
-		goToAbs(root->abs);	
+		if(root->abs!=NULL){	
+			goToAbs(root->abs);
+		}	
 	}else if(root->type == app_){
 		printf("app_\n");
-		goToApp(root->app);
+		if(root->app != NULL){	
+			goToApp(root->app);
+		}
 	}else if(root->type == par_terms){
 		printf("par_terms\n");
 		printf("(\n");
-		goToTerms(root->terms);
+		if(root->terms){	
+			goToTerms(root->terms);
+		}
 		printf(")\n");
 	}
 
@@ -296,7 +312,9 @@ void goToApp(App *root){
 			strcpy(&charsUsados[indice++],root->letter);
 		}
 		printf("%s\n", root->letter);		
-		goToTerms(root->terms);
+		if (root->terms){	
+			goToTerms(root->terms);
+		}
 	}
 }
 
