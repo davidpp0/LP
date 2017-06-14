@@ -59,18 +59,19 @@ int search(char *a){
 void root(Terms *root){
 	char charsAlterar[10] ="";
 	char charSubstituicao[10] ="";
-	int index =0;
-	printf("<-");	
-	printTerms(root);
+//	printf("<-");	
+//	printTerms(root);
 	printf("\n");	
 	goToTerms(root);
 	printf("->");
 	printTerms(root);
 	printf("\n");
-//	goTerms(root, charsAlterar, index, charSubstituicao);
-//	printf("->");
-//	printTerms(root);
-//	printf("\n");
+	/*
+	goTerms(root, charsAlterar, index, charSubstituicao);
+	printf("->");
+	printTerms(root);
+	printf("\n");
+	*/
 }
 
 //FUNCOES DE IMPRIMIR ARVORE----------------------------
@@ -133,7 +134,6 @@ void printAbs(Abs *root){
 	if (root->terms != NULL){
 		printTerms(root->terms);
 	}
-
 }
 // FIM DE FUNCOES DE IMPRIMIR-----------------------------
 
@@ -209,41 +209,23 @@ void goToTerms( Terms *root){
 	if (root->type == term_terms){
 		printf("term_terms\n");
 		
-		if(strcmp("",singleChar)!=0 && newSterm != NULL && root->sterm->type == app_){
+		if(strcmp("",singleChar)!=0 && newSterm != NULL && (root->sterm->type == app_)){
 			root->sterm = newSterm;
-
+			root->type = newSterm->type;
+			return;
 		///RESET DAS VARS DE SUBSTITUICAO
-			
 		}
-
 		//VERIFICA SE O ARRAY TEM ALGUM CHAR P SUBSTITUIR
 		//VERIFICA SE O PRIMEIRO TERMO TEM PARENTISES
 		//VERIFICA SE ESSE TERMO TEM UMA ABS DENTRO
 		//OBJ: GUARDAR A LETRA DA PRIM ABS A SUBSTITUIR
 		if(strcmp("",singleChar) == 0 && root->sterm-> type == par_terms && root->sterm->terms->sterm-> type == abs_){
 				strcpy(&singleChar[0],root->sterm->terms->sterm->abs->letter);
-		
 		}
 
 		if(strcmp("",singleChar) != 0 && newSterm == NULL){
-				Terms *newTerm = malloc(sizeof(Terms));
-			if (root->terms->type == term_){
-			
-			
-				newSterm = root->terms->sterm;
-				newSterm-> type = root->terms->sterm->type;
-				if (root->type == 0){
-					root->type =1;
-					root->terms = NULL;
-				}
-
-			}else if(root->terms->type ==term_terms){
-		
-
-				newSterm = root->terms->sterm;
-				newSterm-> type = root->terms->sterm->type;
-
-			}
+			newSterm = CopySTerm(root->terms->sterm);
+			printSTerm(newSterm);
 		}
 		if (root->sterm!=NULL){
 			goToSTerm(root->sterm);
@@ -251,16 +233,15 @@ void goToTerms( Terms *root){
 		if(root->terms!=NULL){
 			goToTerms(root->terms);
 		}
-
-	}	
-
+		
 	else if(root->type == term_){
 		printf("term_\n");
 	 	if (root->sterm!=NULL){
 			goToSTerm(root->sterm);
 		}
 	}
-
+	
+	}
 
 }
 
@@ -292,9 +273,6 @@ void goToApp(App *root){
 		printf("letter_\n");
 	}else if(root->type == letter_terms){
 		printf("letter_terms\n");
-		if (search(root->letter) ==1){	
-			strcpy(&charsUsados[indice++],root->letter);
-		}	
 		if (root->terms!=NULL){	
 			goToTerms(root->terms);
 		}
@@ -302,14 +280,81 @@ void goToApp(App *root){
 }
 
 void goToAbs(Abs *root){
-	if (search(root->letter) ==1){	
-		strcpy(&charsUsados[indice++],root->letter);
-	}
 	
 	if (root->terms != NULL){
 		goToTerms(root->terms);
 	}
 
+}
+
+
+
+Terms *CopyTerms( Terms *root){
+	Terms *s = malloc(sizeof(Terms));
+	if (root->type == term_terms){
+		s->type = term_terms;
+		if (root->sterm != NULL){
+			s->sterm = CopySTerm(root->sterm);
+		}
+		if (root->terms != NULL){
+			s->terms = CopyTerms(root->terms);
+		}
+	}else if(root->type == term_){
+		s->type = term_;
+		if (root->sterm != NULL){
+			s->sterm = CopySTerm(root->sterm);
+		}
+	}
+	return s;
+}
+
+
+STerm *CopySTerm(STerm *root){
+	STerm *s = malloc(sizeof(STerm));
+	if (root->type == abs_){
+		if(root->abs != NULL){
+			s->type = abs_;
+			s->abs = CopyAbs(root->abs);	
+		
+		}
+	}else if(root->type == app_){
+		if(root->app!= NULL){
+			s->type = app_;
+			s->app = CopyApp(root->app);
+		
+		}
+	}else if(root->type == par_terms){
+		if (root->terms!=NULL){
+			s->type = par_terms;
+			s->terms = CopyTerms(root->terms);		
+		}
+	}
+	return s;
+}
+
+App *CopyApp(App *root){
+	App *s = malloc(sizeof(App));
+	if (root->type == letter_){
+		s->type= letter_;
+		s->letter = root->letter;
+	}else if(root->type == letter_terms){
+		s->type = letter_terms;
+		s->letter= root->letter;
+				
+		if(root->terms!=NULL){
+			s->terms = CopyTerms(root->terms);
+		}
+	}
+	return s;
+}
+
+Abs *CopyAbs(Abs *root){
+	Abs *s = malloc(sizeof(Abs));
+	s->letter = root->letter;
+	if (root->terms != NULL){
+		s->terms = CopyTerms(root->terms);
+	}
+	return s;
 }
 
 

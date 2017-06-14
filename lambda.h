@@ -19,3 +19,9 @@ void goToTerms( Terms *root);
 void goToSTerm(STerm *root);
 void goToApp(App *root);
 void goToAbs(Abs *root);
+
+
+Terms *CopyTerms( Terms *root);
+STerm *CopySTerm(STerm *root);
+App *CopyApp(App *root);
+Abs *CopyAbs(Abs *root);
