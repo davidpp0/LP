@@ -8,7 +8,10 @@ char charsUsados[26] = "";
 int indice = 0;
 char singleChar[1]= "";
 STerm *newSterm = NULL;
+STerm *newSterm2 = NULL;
 Terms *globalRoot;
+Terms *temp;
+STerm *lastSTerm = NULL;
 
 void printArray(char *array){
 	for(int i=0; i<10; i++){
@@ -211,30 +214,42 @@ void goToTerms( Terms *root){
 	if (root->type == term_terms){
 		printf("term_terms\n");
 		
-		/*
-		if(strcmp("",singleChar)!=0 && newSterm != NULL && root->sterm->type == app_ &&  root->sterm->app->letter[0]==singleChar[0]){
-			if (root->sterm->app->type==letter_){
-				printf("AQUI\n");
-				root->sterm = newSterm;				
-			}else if(root->sterm->app->type==letter_terms){
-
-			}
-			return;
-		///RESET DAS VARS DE SUBSTITUICAO
-		}
-		*/
+		
 		//VERIFICA SE O ARRAY TEM ALGUM CHAR P SUBSTITUIR
 		//VERIFICA SE O PRIMEIRO TERMO TEM PARENTISES
 		//VERIFICA SE ESSE TERMO TEM UMA ABS DENTRO
 		//OBJ: GUARDAR A LETRA DA PRIM ABS A SUBSTITUIR
 		if(strcmp("",singleChar) == 0 && root->sterm-> type == par_terms && root->sterm->terms->sterm-> type == abs_){
 				strcpy(&singleChar[0],root->sterm->terms->sterm->abs->letter);
+				printf("AQUIAQUI\n");
+				temp = root->sterm->terms->sterm->abs->terms;
+				printf("\n");
+				printTerms(temp);
+				printf("\n");
 		}
 
+		//Faz copia do ramo a substituir
 		if(strcmp("",singleChar) != 0 && newSterm == NULL){
-			newSterm = CopySTerm(root->terms->sterm);
-			printSTerm(newSterm);
+			newSterm = malloc(sizeof(STerm));
+			if (root->terms->sterm->app != NULL && root->terms->sterm->app->type==letter_terms){
+				App *newApp = malloc(sizeof(App));
+				newApp->type = letter_;
+				newApp->letter ="";
+				newApp->letter = root->terms->sterm->app->letter;
+			//	strcpy(newApp->letter, root->terms->sterm->app->letter); 
+				newSterm->type = app_;
+				newSterm->app = newApp;
+				if(root->terms->sterm->app->terms->sterm!=NULL){
+					newSterm2 = malloc(sizeof(STerm));
+					newSterm2= CopySTerm(root->terms->sterm->app->terms->sterm);			
+				}
+				
+			}else{
+				newSterm = CopySTerm(root->terms->sterm);
+				printSTerm(newSterm);
+			}
 		}
+
 		if (root->sterm!=NULL){
 			goToSTerm(root->sterm);
 		}
@@ -256,6 +271,14 @@ void goToTerms( Terms *root){
 		if(root->terms!=NULL){
 			goToTerms(root->terms);
 		}
+	printf("AQUI\n");
+	lastSTerm = malloc(sizeof(STerm));
+	lastSTerm->type = par_terms;
+	lastSTerm->terms = temp;
+	globalRoot->type = term_;
+	globalRoot->terms = lastSTerm;
+	printTerms(globalRoot);
+
 }
 
 void goToSTerm(STerm *root){
@@ -277,16 +300,8 @@ void goToSTerm(STerm *root){
 					root->abs = newSterm->abs;
 					root->terms = newSterm->terms;
 					return;				
-				}else if(root->app->type==letter_terms){
-					STerm *newNode = malloc(sizeof(STerm));
-					Terms *newTerms = malloc(sizeof(Terms));
-					
+				}		
 
-				}
-
-				printSTerm(root);
-
-				return;
 			}	
 			
 			goToApp(root->app);
