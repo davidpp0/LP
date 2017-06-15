@@ -8,6 +8,7 @@ char charsUsados[26] = "";
 int indice = 0;
 char singleChar[1]= "";
 STerm *newSterm = NULL;
+Terms *globalRoot;
 
 void printArray(char *array){
 	for(int i=0; i<10; i++){
@@ -59,12 +60,13 @@ int search(char *a){
 void root(Terms *root){
 	char charsAlterar[10] ="";
 	char charSubstituicao[10] ="";
+	globalRoot = root;
 //	printf("<-");	
 //	printTerms(root);
 	printf("\n");	
-	goToTerms(root);
+	goToTerms(globalRoot);
 	printf("->");
-	printTerms(root);
+	printTerms(globalRoot);
 	printf("\n");
 	/*
 	goTerms(root, charsAlterar, index, charSubstituicao);
@@ -209,12 +211,18 @@ void goToTerms( Terms *root){
 	if (root->type == term_terms){
 		printf("term_terms\n");
 		
-		if(strcmp("",singleChar)!=0 && newSterm != NULL && (root->sterm->type == app_)){
-			root->sterm = newSterm;
-			root->type = newSterm->type;
+		/*
+		if(strcmp("",singleChar)!=0 && newSterm != NULL && root->sterm->type == app_ &&  root->sterm->app->letter[0]==singleChar[0]){
+			if (root->sterm->app->type==letter_){
+				printf("AQUI\n");
+				root->sterm = newSterm;				
+			}else if(root->sterm->app->type==letter_terms){
+
+			}
 			return;
 		///RESET DAS VARS DE SUBSTITUICAO
 		}
+		*/
 		//VERIFICA SE O ARRAY TEM ALGUM CHAR P SUBSTITUIR
 		//VERIFICA SE O PRIMEIRO TERMO TEM PARENTISES
 		//VERIFICA SE ESSE TERMO TEM UMA ABS DENTRO
@@ -242,7 +250,12 @@ void goToTerms( Terms *root){
 	}
 	
 	}
-
+		if (root->sterm!=NULL){
+			goToSTerm(root->sterm);
+		}
+		if(root->terms!=NULL){
+			goToTerms(root->terms);
+		}
 }
 
 void goToSTerm(STerm *root){
@@ -253,7 +266,29 @@ void goToSTerm(STerm *root){
 		}	
 	}else if(root->type == app_){
 		printf("app_\n");
-		if(root->app != NULL){	
+		if(root->app != NULL){
+			printf("%c\n",root->app->letter[0] );
+			printf("%c\n",singleChar[0] );
+
+			if(root->app->letter[0]==singleChar[0] ){
+				if (root->app->type==letter_){
+					root->type = newSterm->type;
+					root->app = newSterm->app;
+					root->abs = newSterm->abs;
+					root->terms = newSterm->terms;
+					return;				
+				}else if(root->app->type==letter_terms){
+					STerm *newNode = malloc(sizeof(STerm));
+					Terms *newTerms = malloc(sizeof(Terms));
+					
+
+				}
+
+				printSTerm(root);
+
+				return;
+			}	
+			
 			goToApp(root->app);
 		}
 	}else if(root->type == par_terms){
