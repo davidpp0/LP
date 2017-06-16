@@ -64,6 +64,7 @@ void root(Terms *root){
 	char charsAlterar[10] ="";
 	char charSubstituicao[10] ="";
 	globalRoot = root;
+	globalRoot->type = root->type;
 //	printf("<-");	
 //	printTerms(root);
 	printf("\n");	
@@ -71,6 +72,7 @@ void root(Terms *root){
 	printf("->");
 	printTerms(globalRoot);
 	printf("\n");
+	
 	/*
 	goTerms(root, charsAlterar, index, charSubstituicao);
 	printf("->");
@@ -271,13 +273,12 @@ void goToTerms( Terms *root){
 		if(root->terms!=NULL){
 			goToTerms(root->terms);
 		}
-	printf("AQUI\n");
 	lastSTerm = malloc(sizeof(STerm));
 	lastSTerm->type = par_terms;
 	lastSTerm->terms = temp;
 	globalRoot->type = term_;
-	globalRoot->terms = lastSTerm;
-	printTerms(globalRoot);
+	globalRoot->sterm= lastSTerm;
+	
 
 }
 
