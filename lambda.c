@@ -13,6 +13,12 @@ Terms *globalRoot;
 Terms *temp;
 STerm *lastSTerm = NULL;
 
+Terms *fatherTerms = NULL;
+STerm *fatherSTerm = NULL;
+Abs *fatherAbs = NULL;
+App *fatherApp = NULL;
+
+
 void printArray(char *array){
 	for(int i=0; i<10; i++){
 		printf("%c ", array[i]);
@@ -65,8 +71,8 @@ void root(Terms *root){
 	char charSubstituicao[10] ="";
 	globalRoot = root;
 	globalRoot->type = root->type;
-//	printf("<-");	
-//	printTerms(root);
+	printf("<-");	
+	printTerms(root);
 	printf("\n");	
 	goToTerms(globalRoot);
 	printf("->");
@@ -216,14 +222,16 @@ void goToTerms( Terms *root){
 	if (root->type == term_terms){
 		printf("term_terms\n");
 		
-		
+		if(root->terms->type == term_terms && root->terms->sterm->type == par_terms && root->terms->sterm->terms->sterm->type == abs_){
+			printf("GUARDA PAPI\n");
+			fatherTerms = root;
+		}
 		//VERIFICA SE O ARRAY TEM ALGUM CHAR P SUBSTITUIR
 		//VERIFICA SE O PRIMEIRO TERMO TEM PARENTISES
 		//VERIFICA SE ESSE TERMO TEM UMA ABS DENTRO
 		//OBJ: GUARDAR A LETRA DA PRIM ABS A SUBSTITUIR
 		if(strcmp("",singleChar) == 0 && root->sterm-> type == par_terms && root->sterm->terms->sterm-> type == abs_){
 				strcpy(&singleChar[0],root->sterm->terms->sterm->abs->letter);
-				printf("AQUIAQUI\n");
 				temp = root->sterm->terms->sterm->abs->terms;
 				printf("\n");
 				printTerms(temp);
@@ -267,22 +275,33 @@ void goToTerms( Terms *root){
 	}
 	
 	}
+		
 		if (root->sterm!=NULL){
 			goToSTerm(root->sterm);
 		}
 		if(root->terms!=NULL){
 			goToTerms(root->terms);
 		}
-	lastSTerm = malloc(sizeof(STerm));
-	lastSTerm->type = par_terms;
-	lastSTerm->terms = temp;
-	globalRoot->type = term_;
-	globalRoot->sterm= lastSTerm;
-	
-
+		
+	if(fatherTerms != NULL){
+		fatherTerms->terms = temp;
+	}else if(fatherSTerm != NULL){
+		fatherSTerm->terms = temp;
+	}else if(fatherApp != NULL){
+		fatherApp->terms = temp;
+	}else if (fatherAbs != NULL){
+		fatherAbs->terms = temp;	
+	}else{
+		lastSTerm = malloc(sizeof(STerm));
+		lastSTerm->type = par_terms;
+		lastSTerm->terms = temp;
+		globalRoot->type = term_;
+		globalRoot->sterm= lastSTerm;
+	}
 }
 
 void goToSTerm(STerm *root){
+	
 	if (root->type == abs_){
 		printf("abs_\n");
 		if(root->abs!=NULL){	
@@ -293,6 +312,7 @@ void goToSTerm(STerm *root){
 		if(root->app != NULL){
 			printf("%c\n",root->app->letter[0] );
 			printf("%c\n",singleChar[0] );
+
 
 			if(root->app->letter[0]==singleChar[0] ){
 				if (root->app->type==letter_){
@@ -310,6 +330,10 @@ void goToSTerm(STerm *root){
 	}else if(root->type == par_terms){
 		printf("par_terms\n");
 		printf("(\n");
+		/*if(root->terms->type == term_terms && root->terms->sterm->type == par_terms && root->terms->sterm->terms->sterm->type == abs_){
+			printf("GUARDA PAPI\n");
+			fatherSTerm = root;
+		}*/
 		if(root->terms!=NULL){	
 			goToTerms(root->terms);
 		}
@@ -325,6 +349,9 @@ void goToApp(App *root){
 	}else if(root->type == letter_terms){
 		printf("letter_terms\n");
 		if (root->terms!=NULL){	
+			if(root->terms->type == term_terms && root->terms->sterm->type == par_terms && root->terms->sterm->terms->sterm->type == abs_){
+				fatherApp = root;
+			}
 			goToTerms(root->terms);
 		}
 	}
@@ -333,6 +360,10 @@ void goToApp(App *root){
 void goToAbs(Abs *root){
 	
 	if (root->terms != NULL){
+		if(root->terms->type == term_terms && root->terms->sterm->type == par_terms && root->terms->sterm->terms->sterm->type == abs_){
+			printf("GUARDA PAPI\n");
+			fatherAbs = root;
+		}
 		goToTerms(root->terms);
 	}
 
