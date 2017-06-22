@@ -314,25 +314,23 @@ void goToSTerm(STerm *root){
 
 
 			if(root->app->letter[0]==singleChar[0] ){
+				printf("123\n");
 				if (root->app->type==letter_){
+					printf("456\n");
 					root->type = newSterm->type;
-					root->app = newSterm->app;
-					root->abs = newSterm->abs;
-					root->terms = newSterm->terms;
-					return;				
+					root = newSterm;
+					return;	
 				}		
 
 			}	
-			
 			goToApp(root->app);
+			
+
 		}
 	}else if(root->type == par_terms){
 		printf("par_terms\n");
 		printf("(\n");
-		/*if(root->terms->type == term_terms && root->terms->sterm->type == par_terms && root->terms->sterm->terms->sterm->type == abs_){
-			printf("GUARDA PAPI\n");
-			fatherSTerm = root;
-		}*/
+		
 		if(root->terms!=NULL){	
 			goToTerms(root->terms);
 		}
