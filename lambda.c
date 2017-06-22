@@ -17,7 +17,7 @@ Terms *fatherTerms = NULL;
 STerm *fatherSTerm = NULL;
 Abs *fatherAbs = NULL;
 App *fatherApp = NULL;
-
+int flag = 0;
 
 void printArray(char *array){
 	for(int i=0; i<10; i++){
@@ -79,13 +79,13 @@ void root(Terms *root){
 	printTerms(globalRoot);
 	printf("\n");
 	
+}
 	/*
 	goTerms(root, charsAlterar, index, charSubstituicao);
 	printf("->");
 	printTerms(root);
 	printf("\n");
 	*/
-}
 
 //FUNCOES DE IMPRIMIR ARVORE----------------------------
 void printTerms( Terms *root){
@@ -234,8 +234,6 @@ void goToTerms( Terms *root){
 				strcpy(&singleChar[0],root->sterm->terms->sterm->abs->letter);
 				temp = root->sterm->terms->sterm->abs->terms;
 				printf("\n");
-				printTerms(temp);
-				printf("\n");
 		}
 
 		//Faz copia do ramo a substituir
@@ -267,13 +265,12 @@ void goToTerms( Terms *root){
 			goToTerms(root->terms);
 		}
 		
-	else if(root->type == term_){
-		printf("term_\n");
-	 	if (root->sterm!=NULL){
-			goToSTerm(root->sterm);
+		else if(root->type == term_){
+			printf("term_\n");
+		 	if (root->sterm!=NULL){
+				goToSTerm(root->sterm);
+			}
 		}
-	}
-	
 	}
 		
 		if (root->sterm!=NULL){
@@ -283,20 +280,22 @@ void goToTerms( Terms *root){
 			goToTerms(root->terms);
 		}
 		
-	if(fatherTerms != NULL){
+	if(fatherTerms != NULL && temp !=NULL && flag == 0){
 		fatherTerms->terms = temp;
-	}else if(fatherSTerm != NULL){
+	}else if(fatherSTerm != NULL && temp != NULL && flag == 0){
 		fatherSTerm->terms = temp;
-	}else if(fatherApp != NULL){
-		fatherApp->terms = temp;
-	}else if (fatherAbs != NULL){
+	}else if(fatherApp != NULL && temp != NULL && flag == 0){
+		fatherApp->terms = temp; 
+	}else if (fatherAbs != NULL && temp != NULL && flag == 0){
 		fatherAbs->terms = temp;	
 	}else{
+		flag = 1;
 		lastSTerm = malloc(sizeof(STerm));
 		lastSTerm->type = par_terms;
 		lastSTerm->terms = temp;
 		globalRoot->type = term_;
 		globalRoot->sterm= lastSTerm;
+
 	}
 }
 
