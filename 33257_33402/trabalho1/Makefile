@@ -1,4 +1,4 @@
-CC = gcc -Wall -g
+CC = gcc-6 -Wall -g
 YACC = bison -d -v
 LEX = flex
 
@@ -14,7 +14,7 @@ lex.yy.c : analex.lex
 
 run : lambda
 	@echo '[teste.in]'
-	@./lambda < teste.in
+	@./lambda < exemplo1.in
 	
 
 clean :

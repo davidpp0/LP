@@ -1,0 +1,216 @@
+Terminals unused in grammar
+
+   PARD0
+
+
+Estado 6 conflictos: 3 shift/reduce
+
+
+Gramática
+
+    0 $accept: program $end
+
+    1 program: terms
+
+    2 terms: term terms
+    3      | term
+
+    4 term: abs
+    5     | app
+    6     | PARE terms PARD
+
+    7 abs: LAMBDA LETTER PONTO terms
+
+    8 app: LETTER
+    9    | LETTER terms
+
+
+Terminais, com as regras aonde aparecem
+
+$end (0) 0
+error (256)
+LAMBDA (258) 7
+PONTO (259) 7
+PARE (260) 6
+PARD (261) 6
+LETTER (262) 7 8 9
+PARD0 (263)
+
+
+Não-terminais, com as regras aonde aparecem
+
+$accept (9)
+    à esquerda: 0
+program (10)
+    à esquerda: 1, à direita: 0
+terms (11)
+    à esquerda: 2 3, à direita: 1 2 6 7 9
+term (12)
+    à esquerda: 4 5 6, à direita: 2 3
+abs (13)
+    à esquerda: 7, à direita: 4
+app (14)
+    à esquerda: 8 9, à direita: 5
+
+
+Estado0
+
+    0 $accept: . program $end
+
+    LAMBDA  fazer shift, e ir para o estado 1
+    PARE    fazer shift, e ir para o estado 2
+    LETTER  fazer shift, e ir para o estado 3
+
+    program  ir para o estado 4
+    terms    ir para o estado 5
+    term     ir para o estado 6
+    abs      ir para o estado 7
+    app      ir para o estado 8
+
+
+Estado1
+
+    7 abs: LAMBDA . LETTER PONTO terms
+
+    LETTER  fazer shift, e ir para o estado 9
+
+
+Estado2
+
+    6 term: PARE . terms PARD
+
+    LAMBDA  fazer shift, e ir para o estado 1
+    PARE    fazer shift, e ir para o estado 2
+    LETTER  fazer shift, e ir para o estado 3
+
+    terms  ir para o estado 10
+    term   ir para o estado 6
+    abs    ir para o estado 7
+    app    ir para o estado 8
+
+
+Estado3
+
+    8 app: LETTER .
+    9    | LETTER . terms
+
+    LAMBDA  fazer shift, e ir para o estado 1
+    PARE    fazer shift, e ir para o estado 2
+
+    $default  reduzir usando a regra 8 (app)
+
+    terms  ir para o estado 11
+    term   ir para o estado 6
+    abs    ir para o estado 7
+    app    ir para o estado 8
+
+
+Estado4
+
+    0 $accept: program . $end
+
+    $end  fazer shift, e ir para o estado 12
+
+
+Estado5
+
+    1 program: terms .
+
+    $default  reduzir usando a regra 1 (program)
+
+
+Estado6
+
+    2 terms: term . terms
+    3      | term .
+
+    LAMBDA  fazer shift, e ir para o estado 1
+    PARE    fazer shift, e ir para o estado 2
+    LETTER  fazer shift, e ir para o estado 3
+
+    LAMBDA    [reduzir usando a regra 3 (terms)]
+    PARE      [reduzir usando a regra 3 (terms)]
+    LETTER    [reduzir usando a regra 3 (terms)]
+    $default  reduzir usando a regra 3 (terms)
+
+    terms  ir para o estado 13
+    term   ir para o estado 6
+    abs    ir para o estado 7
+    app    ir para o estado 8
+
+
+Estado7
+
+    4 term: abs .
+
+    $default  reduzir usando a regra 4 (term)
+
+
+Estado8
+
+    5 term: app .
+
+    $default  reduzir usando a regra 5 (term)
+
+
+Estado9
+
+    7 abs: LAMBDA LETTER . PONTO terms
+
+    PONTO  fazer shift, e ir para o estado 14
+
+
+Estado10
+
+    6 term: PARE terms . PARD
+
+    PARD  fazer shift, e ir para o estado 15
+
+
+Estado11
+
+    9 app: LETTER terms .
+
+    $default  reduzir usando a regra 9 (app)
+
+
+Estado12
+
+    0 $accept: program $end .
+
+    $default  aceite
+
+
+Estado13
+
+    2 terms: term terms .
+
+    $default  reduzir usando a regra 2 (terms)
+
+
+Estado14
+
+    7 abs: LAMBDA LETTER PONTO . terms
+
+    LAMBDA  fazer shift, e ir para o estado 1
+    PARE    fazer shift, e ir para o estado 2
+    LETTER  fazer shift, e ir para o estado 3
+
+    terms  ir para o estado 16
+    term   ir para o estado 6
+    abs    ir para o estado 7
+    app    ir para o estado 8
+
+
+Estado15
+
+    6 term: PARE terms PARD .
+
+    $default  reduzir usando a regra 6 (term)
+
+
+Estado16
+
+    7 abs: LAMBDA LETTER PONTO terms .
+
+    $default  reduzir usando a regra 7 (abs)
